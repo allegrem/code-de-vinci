@@ -1,0 +1,57 @@
+<h2>
+	<%= link_to Joueur.find(adversaire.joueur_id).pseudo, :controller => "joueurs", :action => "show", :id => adversaire.joueur_id %>
+	<%= '<em style="font-size:small; margin-left:20px">admin</em>' if adversaire.joueur_id == @partie.createur %>
+</h2>
+
+
+
+<% if adversaire.code != nil &&  adversaire.code.length < 4 %>
+  <p>La partie commencera quand ce joueur aura pris ses quatre jetons.</p>
+<% end %>
+
+
+<p>
+<table><tr>
+<% compteur = 0
+code = []
+code = adversaire.code.split("-")  if adversaire.code != nil
+
+code.each do |jeton|
+
+  if jeton[-1,1] == "V" 
+    texte = get_numero_jeton(jeton)
+   else
+    texte = "?"
+   end
+   %>
+   
+  <td id="jeton_<%= adversaire.joueur_id %>_<%= compteur %>" class="jeton_col" style="<%= get_style_jeton(jeton) %>">
+  
+    <% if @partie.phase == 1  &&  @partie.joueurs[@partie.tour].id == session[:joueur_id] && jeton[-1,1] == "H" %>
+        <%= link_to texte, "#form_#{adversaire.joueur_id}_#{compteur}", 
+						{:style => get_style_jeton(jeton), 
+						:onClick => "javascript: display_form(#{adversaire.joueur_id},#{compteur})" } %> 
+        
+        <div id="form_<%= adversaire.joueur_id %>_<%= compteur %>" style="display:none; padding-top:20px;">
+        <% form_remote_tag :url => {:action => "guess", :id => params[:id]},
+							:condition => "check_if_is_integer(#{adversaire.joueur_id},#{compteur}) == true" do %>
+					<%= text_field_tag "nbre_entre", "", :size => 2 %>
+          <%= hidden_field_tag "joueur_id", adversaire.joueur_id %>
+          <%= hidden_field_tag "jeton_id", compteur %>
+          <%= submit_tag "Ok" %>
+        <% end %>
+        </div>
+        
+        
+    <% else %>
+        <%= texte %>
+    <% end %>
+    
+  </td>
+  
+<% compteur = compteur + 1
+end %>
+
+</tr></table>
+</p>
+

@@ -1,0 +1,15 @@
+<% if session[:joueur_id] %>
+<p>
+  Vous êtes déjà connecté !! <br />
+  <%= link_to "Retour à la liste des parties", :controller => "parties" %>
+</p>
+<% else %>
+
+
+
+<h1>Se connecter</h1>
+
+<%= render :partial => "login" %>
+
+
+<% end %>

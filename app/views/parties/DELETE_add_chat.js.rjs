@@ -1,0 +1,8 @@
+message_full = ""
+@chat_messages.each do |m|
+	message_full = message_full + m.message + "<br />"
+end
+
+page.insert_html :bottom, 'chat', message_full
+
+page.replace_hmtl "message", ""

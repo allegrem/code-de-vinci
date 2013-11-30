@@ -1,0 +1,12 @@
+# on met à jour le dernier id du message chat reçu par le client
+page << "last_chat_id = " + @chat_message.id.to_s
+
+# on vide le formulaire de chat
+page[:message].value = ""
+
+# on ajoute le message en bas du chat
+page.insert_html :bottom, 'chat', get_chat_messages(@chat_messages)
+page['chat_line_'+@chat_message.id.to_s].visual_effect :highlight, :duration => 3
+
+# on scroll down le chat
+page << "document.getElementById('chat').scrollTop = document.getElementById('chat').scrollHeight;"

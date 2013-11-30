@@ -1,0 +1,12 @@
+unless @chat_messages == []
+	page.insert_html :bottom, 'chat', get_chat_messages(@chat_messages)
+	
+	page << "document.getElementById('chat').scrollTop = document.getElementById('chat').scrollHeight;"
+	
+	page << "last_chat_id = " + @chat_messages.last.id.to_s
+	
+	#on highlight les messages ajoutés
+	@chat_messages.each do |m|
+		page['chat_line_'+m.id.to_s].visual_effect :highlight, :duration => 3
+	end
+end

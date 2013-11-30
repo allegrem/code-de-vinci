@@ -1,0 +1,158 @@
+<script type="text/javascript">
+		<!--
+		//on initialise quelques variables
+		var last_chat_id = <%= @chat_messages.last.id %>; //stocke le dernier message du chat reçu
+		var partie_update_id = <%= @partie.update_id %>; //stocke le numéro d'update de la partie
+		-->
+</script>
+
+
+<!-- Lancement des updates périodiques -->
+<%= periodically_call_remote  :url => {:action => "refresh", :id => params[:id]},
+	:update => 'body',
+	:frequency => 5,
+	:with => "'partie_update_id=' + partie_update_id" %>
+<%= periodically_call_remote  :url => {:action => "refresh_chat", :id => params[:id]},
+	:update => 'body',
+	:frequency => 2,
+	:with => "'last_chat_id=' + last_chat_id" %>
+	
+	
+	
+
+<h1><%= link_to @partie.nom, {:action => "show", :id => params[:id]}, {:style => "text-decoration:none"} %></h1>
+
+
+<!-- colonne droite -->
+<div style="float:right; width:40%">
+	<!-- chat -->
+	<div class="side_title">Chat</div>
+	<div id="chat" style="max-height:200px; overflow:auto; margin-bottom:10px">
+		<%= get_chat_messages(@chat_messages) %>
+	</div>
+	
+	<script type="text/javascript"><!--
+		document.getElementById('chat').scrollTop = document.getElementById('chat').scrollHeight; //on scroll down le chat
+	--></script>
+
+	<% if @joueur_partie != nil #on active le chat que si le joueur est dans la partie
+	form_remote_tag :url => {:action => "add_chat_message", :id => params[:id]} do %>
+		<%= hidden_field_tag "joueur_id", session[:joueur_id] %>
+		<%= text_field_tag "message", "", :size => "45" %>
+		<%= submit_tag "Envoyer" %>
+	<% end end %>
+	
+	
+	<!-- administration -->
+	<% if @partie.createur == session[:joueur_id] %>
+	<br /><br />
+	<div class="side_title">Administration de la partie</div>
+	
+  <p>
+    <%= link_to 'Supprimer la partie', @partie, :confirm => 'Etes vous sur de vouloir supprimer cette partie ?', :method => :delete %>
+  </p>
+  
+	<% end %>
+</div>
+
+
+
+
+<div id="infos_partie">
+<%= render :partial => "infos_partie" %>
+</div>
+
+
+
+
+
+<!-- joueur connecté -->
+<% if @partie_joined %>
+<div id="code_joueur">
+<%= render :partial => "code_joueur" %>
+</div>
+<% end %>
+
+
+
+
+
+<!-- adversaires -->
+<script type="text/javascript"><!--
+    //on initialise les variables qui permettront de retrouver le dernier formulaire affiché
+    var last_joueur_id = -1;
+    var last_compteur = -1;
+    
+		//cette fonction cache le dernier formulaire affiché et affiche celui sous le jeton cliqué
+    function display_form(joueur_id, compteur)
+    {
+      //on cache le dernier formulaire affiché
+      if(last_joueur_id != -1  &&  last_compteur != -1)
+      {
+				document.getElementById('form_'+last_joueur_id+'_'+last_compteur).fade({duration: 0.2});
+				document.getElementById('jeton_'+last_joueur_id+'_'+last_compteur).morph('width: 30px;', {duration: 0.5});
+				document.getElementById('jeton_'+last_joueur_id+'_'+last_compteur).morph('height: 50px;', {duration: 0.5});
+      }
+      
+      //si le joueur demande à seulement fermer le dernier formulaire affiché, on remet les variables à leur valeur initiale
+			if(joueur_id == last_joueur_id  &&  compteur == last_compteur)
+			{
+				last_compteur = -1;
+				last_joueur_id = -1;
+			}
+      else
+			{
+				//on met à jour les variables permettant de retrouver le dernier formulaire affiché
+				last_joueur_id = joueur_id;
+				last_compteur = compteur;
+				
+				//on affiche le formulaire demandé
+				document.getElementById('form_'+joueur_id+'_'+compteur).appear({duration: 0.5});
+				document.getElementById('jeton_'+joueur_id+'_'+compteur).morph('width: 100px;', {duration: 0.2});
+				document.getElementById('jeton_'+joueur_id+'_'+compteur).morph('height: 100px;', {duration: 0.2});
+			}
+    }
+    
+    //cette fonction vérifie que ce que le joueur a saisi est bien un nombre
+		function check_if_is_integer(joueur_id, compteur)
+		{
+			var exp = new RegExp("^[0-9]+$");
+			var node = document.getElementById('form_'+joueur_id+'_'+compteur).firstElementChild.children[1];
+			if(exp.test(node.value))
+			{
+				//on cache le formulaire
+				document.getElementById('form_'+joueur_id+'_'+compteur).fade({duration: 0.2});
+				document.getElementById('jeton_'+joueur_id+'_'+compteur).morph('width: 30px;', {duration: 0.5});
+				document.getElementById('jeton_'+joueur_id+'_'+compteur).morph('height: 50px;', {duration: 0.5});
+				
+				return true;
+			}
+			else
+			{
+				alert("Oups !! Vous avez entré '" + node.value + "' au lieu d'un nombre !");
+				return false;
+			}
+		}
+--></script>
+
+<div id="adversaires">
+	<%= render :partial => "adversaire", :collection => @adversaires %>
+</div>
+
+
+
+
+
+
+<h2>Pioche</h2>
+<div id="pioche">
+	<%= render :partial => "pioche", :object => @pioche %>
+</div>
+
+
+
+
+<br />
+<p>
+  <%= link_to 'Retour à la liste des parties', :action => "index" %>
+</p>

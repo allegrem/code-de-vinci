@@ -1,0 +1,15 @@
+<h1>Liste des joueurs</h1>
+
+<table>
+<% @joueurs.each do |j| %>
+  <tr>
+    <td><%= j.pseudo %></td>
+   <td><%= link_to 'Voir', :action => "show", :id => j.id %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'Inscription', :action => "new" %> | 
+<%= link_to 'Liste des parties', :controller => "parties" %>

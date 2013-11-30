@@ -1,0 +1,25 @@
+<% if @partie.tour == -1 %>
+<p><strong style="color:red">
+  <% if @partie.joueurs.count < @partie.nbre_joueur %>
+  Cette partie n'a pas encore commencé : <%= @partie.nbre_joueur - @partie.joueurs.count %> joueur(s) manquant(s).
+  <%= link_to "Rejoindre cette partie", :action => "join", :id => @partie.id   if !@partie_joined %>
+  
+  <% elsif @pioche.length < 22 - @partie.nbre_joueur * 4 %>
+  
+  Cette partie est terminée
+  
+  <% else %>
+  
+  Cette partie n'a pas encore commencé : un ou plusieurs joueurs n'ont pas pioché leurs quatre jetons.
+  
+  <% end %>
+</strong></p>
+
+
+<% else %>
+
+<p>
+C'est à <strong><%= @partie.joueurs[@partie.tour].pseudo %></strong> de jouer !
+</p>
+
+<% end %>

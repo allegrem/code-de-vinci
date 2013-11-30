@@ -1,0 +1,21 @@
+page.replace_html("pioche", :partial => "pioche", :object => @pioche)
+
+page.replace_html("infos_partie", :partial => "infos_partie")
+
+page.replace_html("adversaires", :partial => "adversaire", :collection => @adversaires)
+
+if @partie_joined
+page.replace_html("code_joueur", :partial => "code_joueur")
+end 
+
+#on réinitialise les variables de la page
+page << "last_joueur_id = -1"
+page << "last_compteur = -1"
+page << "partie_update_id = " + @partie.update_id.to_s
+
+#on fait les highlight demandés
+if @highlight != nil
+	@highlight.each do |h|
+		page[h.id].visual_effect :highlight, :startcolor => h.color, :endcolor => h.bg, :duration => 3
+	end
+end

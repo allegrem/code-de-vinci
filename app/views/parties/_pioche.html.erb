@@ -1,0 +1,25 @@
+<table>
+<tr>
+
+<% 
+compteur = 0
+pioche.each do |jeton| 
+%>
+  
+  <td class="jeton_col" style="<%= get_style_jeton(jeton) %>">
+  
+    <% if (@partie_joined  &&  @code_joueur.length < 4)  ||  (@partie.joueurs[@partie.tour].id == session[:joueur_id] && @partie.phase == 0  &&  @partie.tour != -1) %>
+        <%= link_to_remote "?", :update => "body", :url => {:action => "piocher", :id => params[:id], :jeton_id => compteur}, :html => {:style => get_style_jeton(jeton)} %>
+    <% else %>
+        ?
+    <% end %>
+   
+  </td>
+  
+  <% 
+  compteur = compteur + 1
+end 
+%>
+
+</tr>
+</table>

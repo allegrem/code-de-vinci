@@ -1,0 +1,17 @@
+<% partie_joined_ = partie_joined(partie_ligne, session[:joueur_id]) %>
+
+<tr>
+  
+  <td style="<%= 'font-weight:bold' if partie_joined_ %>">
+    <%= link_to partie_ligne.nom, :controller => "parties", :action => "show", :id => partie_ligne.id %>
+  </td>
+  
+  <td>
+    <%= partie_ligne.joueurs.count.to_s + "/" + partie_ligne.nbre_joueur.to_s %>
+  </td>
+  
+  <td>
+    <%= link_to 'Rejoindre', :controller => "parties", :action => "join", :id => partie_ligne.id   if partie_ligne.tour == -1 and !partie_joined_ %>
+  </td>
+  
+</tr>

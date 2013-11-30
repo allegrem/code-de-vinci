@@ -1,0 +1,75 @@
+<h2>
+	<%= link_to @joueur.pseudo, :controller => "joueurs", :action => "show", :id => @joueur.id %> 
+	<%= '<em style="font-size:small; margin-left:20px">admin</em>' if @joueur.id == @partie.createur %>
+</h2>
+
+<% 
+#on affiche les instructions
+#s'il faut piocher en début de partie
+if @code_joueur.length < 4 %>
+  <p><strong style="color:red;">Vous devez piocher encore <%= 4 - @code_joueur.length %> jeton(s) avant de pouvoir commencer la partie !</strong><br />
+  Cliquez sur un jeton de la pioche pour le prendre.</p>
+  
+  
+  
+<%
+# si la partie est terminée
+elsif @partie.tour == -1  &&  @pioche.length < 22 - @partie.nbre_joueur * 4
+%>
+<p>Partie terminée</p>
+
+
+
+<% 
+#s'il faut attendre que d'autres joueurs rejoignent la partie
+elsif @code_joueur.length >= 4  &&  (@partie.tour == -1  ||  @partie.joueurs[@partie.tour].id != @joueur.id)
+%>
+<p>En attente d'autres joueurs ...</p>
+
+
+<% 
+#s'il faut piocher un jeton en début de tour
+else
+if @partie.phase == 0 %>
+  <p><strong style="color:red;">C'est à vous de jouer !</strong><br />
+  Vous devez piocher un jeton. Cliquez sur un jeton de la pioche pour le prendre.</p>
+<% 
+#s'il faut deviner un jeton
+else %>
+  <p>
+    <strong style="color:red;">C'est à vous de jouer !</strong><br />
+    Vous devez deviner le jeton d'un de vos adversaires. Cliquez sur l'un des jetons de vos adversaires, puis entrez le numéro que vous proposez.
+    <% if @partie.nbre_guess > 0 %>
+    <br />Vous pouvez aussi arrêter et passer la main au joueur suivant : <%= link_to_remote 'Passer la main', :update => "body", :url => {:action => 'passer', :id => params[:id]} %>
+    <% end %>    
+  </p>
+<% 
+end
+end %>
+
+
+
+<% 
+#on affiche le code du joueur 
+%>
+<p>
+<table><tr>
+<% compteur = 0
+@code_joueur.each do |jeton|
+
+  if jeton[-1,1] == "V" 
+    texte = get_numero_jeton(jeton)
+   else
+    texte = "?"
+   end %>
+  <td id="jeton_<%= @joueur.id %>_<%= compteur %>" class="jeton_col" style="<%= get_style_jeton(jeton) %>">
+    <%= texte %>
+    <% if jeton[-1,1] == "H" %>
+      <br /><span style="font-size:small"><%= get_numero_jeton(jeton) %></span>
+    <% end %> 
+  </td>
+  <% compteur = compteur + 1
+end %>
+
+</tr></table>
+</p>

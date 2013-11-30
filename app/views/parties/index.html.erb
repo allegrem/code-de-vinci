@@ -1,0 +1,15 @@
+<h1>Liste des parties</h1>
+
+
+<% if @parties == [] %>
+<p><em>Aucune partie disponible.</em></p>
+<% else %>
+<table>
+<%= render :partial => "partie_ligne", :collection => @parties %>
+</table>
+<% end %>
+
+
+<br />
+
+<%= link_to 'Nouvelle partie', :action => "new" %>

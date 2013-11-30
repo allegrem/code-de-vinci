@@ -1,0 +1,23 @@
+<h1>Nouveau joueur</h1>
+
+<% form_for :joueur, :url => {:action => "create"} do |f| %>
+  <%= f.error_messages %>
+  
+  <p>
+    <%= f.label :pseudo %><br />
+    <%= f.text_field :pseudo %>
+  </p>
+  <p>
+    <%= f.label :password, "Mot de passe" %><br />
+    <%= f.password_field :password %>
+  </p>
+  <p>
+    <%= f.label :password_confirmation, "Confirmer votre mot de passe" %><br />
+    <%= f.password_field :password_confirmation %>
+  </p>
+  <p>
+    <%= f.submit 'Créer' %>
+  </p>
+<% end %>
+
+<%= link_to 'Retour', :action => "index" %>

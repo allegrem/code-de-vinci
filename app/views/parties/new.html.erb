@@ -1,0 +1,21 @@
+<h1>Nouvelle partie</h1>
+
+<% form_for(@partie) do |f| %>
+  <%= f.error_messages %>
+
+  <p>
+    <%= f.label :nom, "Nom de la partie" %><br />
+    <%= f.text_field :nom %>
+  </p>
+  
+  <p>
+    <%= f.label :nbre_joueur, "Nombre de joueurs" %><br />
+    <%= f.select :nbre_joueur, %w{2 3 4} %>
+  </p>
+
+  <p>
+    <%= f.submit 'Créer' %>
+  </p>
+<% end %>
+
+<%= link_to 'Retour', parties_path %>

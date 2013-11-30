@@ -1,0 +1,21 @@
+<h1><%= @joueur.pseudo %></h1>
+
+<h2>Parties en cours</h2>
+<p>
+<% @joueur.parties.each do |p| %>
+  <%= link_to p.nom, :controller => "parties", :action => "show", :id => p.id %> 
+  <%= link_to "Rejoindre cette partie", :controller => "parties", :action => "join", :id => p.id   if p.tour == -1 && !partie_joined(p, session[:joueur_id]) %>  <br />
+<% end %>
+</p>
+
+
+<% if session[:joueur_id] == @joueur.id %>
+<h2>Gérer son compte</h2>
+<p>
+<%= link_to 'Supprimer le compte', {:action => "destroy", :id => @joueur.id}, :confirm => 'Etes vous sur de vouloir supprimer votre compte ?' %>
+</p>
+<% end %>
+
+<p>
+<%= link_to 'Liste des joueurs', :action => "index" %> | <%= link_to 'Liste des parties', :controller => "parties" %>
+</p>

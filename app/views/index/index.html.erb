@@ -1,0 +1,42 @@
+<div>
+
+<div style="float:left">
+  <h2>Parties en cours</h2>
+  
+  <% if @parties_en_cours == [] %><p><em>Aucune partie en cours.</em></p><% else %>
+  <table>
+    <%= render :partial => "parties/partie_ligne", :collection => @parties_en_cours %>
+  </table>
+  <% end %>
+  
+  
+  <h2>Parties en attente</h2>
+  
+  <% if @parties_en_attente == [] %><p><em>Aucune partie en attente.</em></p><% else %>
+  <table>
+    <%= render :partial => "parties/partie_ligne", :collection => @parties_en_attente %>
+  </table>
+  <% end %>
+  
+  
+  <p><%= link_to "Liste des parties", :controller => "parties" %> | <%= link_to "Nouvelle partie", :controller => "parties", :action => "new" %></p>
+</div>
+
+
+
+<div style="float:right; width:30%; border:outset 2px; padding:10px">
+  <% if session[:joueur_id] %>
+  <h2>Vos parties en cours</h2>
+  <table>
+    <%= render :partial => "parties/partie_ligne", :collection => @parties_joueur %>
+  </table>
+  
+  <% else %>
+  
+  <h2>Connexion</h2>
+  <%= render :partial => "joueurs/login" %>
+  <% end %>
+</div>
+
+
+</div>
